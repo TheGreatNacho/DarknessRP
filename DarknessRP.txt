@@ -1,0 +1,11 @@
+"DarknessRP"
+{
+	"base"		"base"
+	"title"		"DarknessRP"
+	"maps"		"^drp_"
+	"menusystem"	"1"
+	"settings"
+	{
+
+	}
+}

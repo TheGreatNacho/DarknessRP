@@ -1,5 +1,4 @@
 include( 'shared.lua' )
-
 function HUDHide( myhud )
 	for k,v in pairs {"CHudHealth","CHudBattery"} do
 		if myhud == v then return false end
@@ -49,18 +48,14 @@ function HUDMaking()
 		
 		end
 	end
-	if BooleonA then
-		for k,v in pairs ( team.GetPlayers(3) ) do
-			if ply:IsAdmin() then
-				local Position = ( v:GetPos() + Vector( 0,0,80 ) ):ToScreen()
-				local Name = ""
-				if v == LocalPlayer() then
-					Name = "" else Name = v:Name()
-				end
-				draw.DrawText( Name, "ScoreboardPlayerName", Position.x, Position.y, team.GetColor(v:Team()), 1 )
-		
-			end
+	if ply:IsAdmin() then
+		local Position = ( v:GetPos() + Vector( 0,0,80 ) ):ToScreen()
+		local Name = ""
+		if v == LocalPlayer() then
+			Name = "" else Name = v:Name()
 		end
+		draw.DrawText( Name, "ScoreboardPlayerName", Position.x, Position.y, team.GetColor(v:Team()), 1 )
+
 	end
 end
 hook.Add("HUDShouldDraw", "HUDHide", HUDHide)

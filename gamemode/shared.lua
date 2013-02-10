@@ -4,7 +4,7 @@ GM.Email = "tedwood3@gmail.com"
 GM.Website = "www.rectangulargaming.net"
 
 DeriveGamemode( "sandbox" )
-BooleonA = false
+
 team.SetUp( 1, "The Darkness", Color(0,0,0))
 team.SetUp( 2, "Citizen", Color(255,255,255))
 team.SetUp( 3, "Minion", Color(50,50,50))

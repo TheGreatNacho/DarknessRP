@@ -453,17 +453,6 @@ function ChatCommands( ply, text, public )
 		return false
 	end
 	
-	if (string.sub( text, 1, 4) == "/esp") then
-		if BooleonA then
-			BooleonA = false
-			ply:PrintMessage( HUD_PRINTTALK, "Esp off." )
-		else
-			BooleonA = true
-			ply:PrintMessage( HUD_PRINTTALK, "Esp on." )
-		end
-		return false
-	end
-	
 	if (string.sub( text, 1, 5) == "/help") then
 		ply:PrintMessage( HUD_PRINTTALK, "/darkness - Displays who the darkness is." )
 		ply:PrintMessage( HUD_PRINTTALK, "/drop - Drops currently held weapon." )

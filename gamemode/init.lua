@@ -20,6 +20,7 @@ function GM:PlayerSpawn( ply )
 			print("The Darkness has won.")
 			for k,v in pairs(player.GetAll()) do
 				if v:Team() == 3 then
+					timer.Start("popup")
 					v:StripWeapons()
 					v:Give( "weapon_fists" )
 					v:SetRunSpeed( 240 )
@@ -27,58 +28,37 @@ function GM:PlayerSpawn( ply )
 					v:SetMaxHealth( 50 )
 					v:SetHealth(50)
 					v:SetGravity( 1 )
-					v:SetModel( "" )
 					v:SetTeam( 2 )
 					
-					// RandSkin Start //
-					local Citirand1 = math.random(1,12)
-					local Citirand2 = math.random(1,18)
-					local Gend = math.random(1,2)
-	
-					if ply:Team() == 1 then
-						ply:SetModel("models/player/gman_high.mdl")
-					else
-						if Gend == 1 then
-							ply:SetModel("models/player/female" .. Citirand1)
-						else
-							ply:SetModel("models/player/male" .. Citirand2)
-						end
-					end
-					// RandSkin End //
 					if v:IsAdmin() then
 					v:Give( "gmod_tool" )
 					v:Give( "gmod_camera" )
 					v:Give( "weapon_physgun" )
 					end
-					print(v:Name().." has been swaped to "..v:Team())
 				end
 				if v:Team() == 1 then
 					v:SetHealth(100)
 					v:Give( "weapon_fists" )
 				end
 			end
+			ModelSetting(v)
 		end
 	end
 	ply:StripWeapons()
 	ply:Give( "weapon_fists" )
 	if ply:Team() == 1 then
-		
 		ply:SetRunSpeed( 530 )
-		ply:Flashlight( false )
 		ply:SetWalkSpeed( 300 )
 		ply:SetGravity( 0.25 )
 		ply:SetMaxHealth( 100 )
 		ply:SetHealth(100)
-		ply:SetModel( "models/player/gman_high.mdl" )
 	elseif ply:Team() == 2 then
-		
 		ply:SetRunSpeed( 240 )
 		ply:SetWalkSpeed( 120 )
 		ply:SetMaxHealth( 100 )
 		ply:SetHealth(50)
 		ply:SetGravity( 1 )
 	else
-		
 		ply:SetRunSpeed( 250 )
 		ply:SetWalkSpeed( 150 )
 		ply:SetGravity( 0.75 )
@@ -92,42 +72,15 @@ function GM:PlayerSpawn( ply )
 		ply:Give( "weapon_physgun" )
 	end
 	ply:PrintMessage( HUD_PRINTTALK, "You are ".. team.GetName( ply:Team() ) )
-	// RandSkin Start //
-	local Citirand1 = math.random(1,12)
-	local Citirand2 = math.random(1,18)
-	local Gend = math.random(1,2)
-	
-	if ply:Team() == 1 then
-		ply:SetModel("models/player/gman_high.mdl")
-	else
-		if Gend == 1 then
-			ply:SetModel("models/player/female" .. Citirand1)
-		else
-			ply:SetModel("models/player/male" .. Citirand2)
-		end
-	end
-	// RandSkin End //
+	ModelSetting(ply)
 end
 
 function GM:PlayerInitialSpawn( ply )
 	SetATeam( ply )
 	ply:PrintMessage( HUD_PRINTTALK, "Welcome, " .. ply:Name() .. "! You are ".. team.GetName( ply:Team() ) )
 	ply:PrintMessage( HUD_PRINTTALK, "You can type /help and any time to see a list of the commands." )
-	// RandSkin Start //
-	local Citirand1 = math.random(1,12)
-	local Citirand2 = math.random(1,18)
-	local Gend = math.random(1,2)
-	
-	if ply:Team() == 1 then
-		ply:SetModel("models/player/gman_high.mdl")
-	else
-		if Gend == 1 then
-			ply:SetModel("models/player/female" .. Citirand1)
-		else
-			ply:SetModel("models/player/male" .. Citirand2)
-		end
-	end
-	// RandSkin End //
+
+	ModelSetting( ply )
 end
 
 function GM:PlayerDeath( ply, inf, att )
@@ -139,9 +92,9 @@ ply:StripWeapons()
 		att:SetTeam( 1 )
 		att:PrintMessage( HUD_PRINTTALK, "When the Darkness leaves one body, it consumes another." )
 		att:SetRunSpeed( 530 )
-		ModelSeting( att )
-		att:Flashlight( false )
+		ModelSetting( att )
 		att:SetWalkSpeed( 300 )
+		att:Flashlight(false)
 		att:SetGravity( 0.25 )
 		att:Give( "weapon_fists" )
 		att:PrintMessage( HUD_PRINTTALK, "You are ".. team.GetName( ply:Team() ) )
@@ -178,21 +131,7 @@ ply:StripWeapons()
 			end
 		end
 	end
-	// RandSkin Start //
-		local Citirand1 = math.random(1,12)
-		local Citirand2 = math.random(1,18)
-		local Gend = math.random(1,2)
 	
-		if att:Team() == 1 then
-			att:SetModel("models/player/gman_high.mdl")
-		else
-			if Gend == 1 then
-				att:SetModel("models/player/female" .. Citirand1)
-			else
-				att:SetModel("models/player/male" .. Citirand2)
-			end
-		end
-		// RandSkin End //
 end
 
 function GM:PlayerSpawnObject( ply )
@@ -246,25 +185,27 @@ end
 
 function GM:PlayerSwitchFlashlight(  ply, on )
 	if ply:Team() == 1 then
-		on = false
-		return false
-	else
-		return true
+		if ply:FlashlightIsOn() then
+			return true
+		else
+			return false
+		end
 	end
+	return true
 end
 
 function GM:PlayerConnect( name, address )
 	for k,v in pairs(player.GetAll()) do
-		v:ChatPrint( name.." has joined the 'game'" )
-		print(name.." has joined the 'game'")
+		v:ChatPrint( name.." has joined the game" )
 	end
+	print(name.." has joined the game")
 end
 
 function GM:PlayerDisconnected( ply )
 	for k,v in pairs(player.GetAll()) do
 		v:ChatPrint( ply:GetName().." has abandoned you all!" )
-		print(ply:GetName().." has abandoned you all!")
 	end
+	print(ply:GetName().." has abandoned you all!")
 	if ply:Team() == 1 then
 		local randply = math.random(1, team.NumPlayers( 2 ))
 		team.GetPlayers(2)[randply]:StripWeapons()
@@ -273,10 +214,34 @@ function GM:PlayerDisconnected( ply )
 		team.GetPlayers(2)[randply]:SetWalkSpeed( 300 )
 		team.GetPlayers(2)[randply]:SetMaxHealth( 100 )
 		team.GetPlayers(2)[randply]:SetHealth(100)
-		team.GetPlayers(2)[randply]:SetModel( "models/player/gman_high.mdl" )
+		ModelSetting(team.GetPlayers(2)[randply])
 		team.GetPlayers(2)[randply]:PrintMessage( HUD_PRINTTALK, "You are now The Darkness." )
 		team.GetPlayers(2)[randply]:SetTeam(1)
 	end
+end
+
+function GM:PlayerShouldTakeDamage(ply,vic)
+	if ply:Team() ~= vic:Team() then
+		if ply:Team() ~= 2 then
+			if ply:Team() == 1 then
+				if vic:Team() == 3 then
+					return false
+				else
+					return true
+				end
+			return true
+			end
+		else
+			return true
+		end
+	else
+	return false
+	end
+end
+
+function GM:ShowSpare2( ply )
+	umsg.Start( "OpenA", ply )
+	umsg.End()
 end
 
 -----------------My Functions----------------------
@@ -284,8 +249,17 @@ end
 ---------------------------------------------------
 ---------------------------------------------------
 
-function ModelSeting( ply )
-
+function ModelSetting( ply )
+	local rnd = math.random(1,15)
+	if ply:Team() == 1 then
+		ply:SetModel( "models/player/gman_high.mdl" )
+		return
+	end
+	if ply:Team() == 2 or ply:Team() == 3 then
+		ply:SetModel( skins[rnd] )
+		return
+	end
+	return
 end
 
 function SetATeam( ply )
@@ -295,7 +269,7 @@ function SetATeam( ply )
 				ply:Give( "weapon_fists" )
 				ply:SetRunSpeed( 530 )
 				ply:SetWalkSpeed( 300 )
-				ply:Flashlight( false )
+				ModelSetting(ply)
 				ply:SetGravity( 0.25 )
 				ply:SetMaxHealth( 100 )
 				ply:SetHealth(100)
@@ -305,7 +279,7 @@ function SetATeam( ply )
 				ply:Give( "weapon_fists" )
 				ply:SetRunSpeed( 240 )
 				ply:SetWalkSpeed( 120 )
-				ply:SetModel( "" )
+				ModelSetting(ply)
 				ply:SetGravity( 1 )
 				ply:SetMaxHealth( 50 )
 				ply:SetHealth(50)
@@ -326,11 +300,11 @@ function ChatCommands( ply, text, public )
 				ply:Give( "weapon_fists" )
 				ply:SetRunSpeed( 240 )
 				ply:SetWalkSpeed( 120 )
+				ModelSetting(ply)
 				ply:SetMaxHealth( 50 )
 				ply:SetHealth(50)
 				ply:SetGravity( 1 )
-				
-			ply:PrintMessage( HUD_PRINTTALK, "You are now a Citizen." )
+				ply:PrintMessage( HUD_PRINTTALK, "You are now a Citizen." )
 		elseif ply:Team() == 2 then
 			if team.NumPlayers( 1 ) == 1 then
 				ply:PrintMessage( HUD_PRINTTALK, "Team cannot be swapped at this time." )
@@ -339,11 +313,12 @@ function ChatCommands( ply, text, public )
 				ply:Give( "weapon_fists" )
 				ply:SetRunSpeed( 530 )
 				ply:SetMaxHealth( 100 )
-				ply:Flashlight( false )
+				ModelSetting(ply)
+				ply:Flashlight(false)
 				ply:SetHealth(100)
 				ply:SetWalkSpeed( 300 )
 				ply:SetGravity( 0.25 )
-				
+				ply:PrintMessage( HUD_PRINTTALK, "You are now The Darkness." )
 			end
 		else
 			ply:PrintMessage( HUD_PRINTTALK, "Team cannot be swapped at this time." )
@@ -358,14 +333,18 @@ function ChatCommands( ply, text, public )
 	end
 	
 	if (string.sub( text, 1, 6) == "/aswap") then
-		ply:StripWeapons()
 		if ply:Team() == 1 then
+			if team.NumPlayers( 2 ) ~= 0 then
+			
+			else
+			ply:PrintMessage( HUD_PRINTTALK, "Use /swap." )
+			return
+			end
 			
 			local randply = math.random(1, team.NumPlayers( 2 ))
 			local oth = team.GetPlayers(2)[randply]
 			
-			ply:SetTeam( 2 )
-			oth:SetTeam( 1 )
+			ply:StripWeapons()
 			
 			ply:StripWeapons()
 			oth:StripWeapons()
@@ -382,7 +361,11 @@ function ChatCommands( ply, text, public )
 			oth:SetGravity( 0.25 )
 			ply:SetGravity( 1 )
 			
-			oth:Flashlight( false )
+			ModelSetting( ply )
+			ModelSetting( oth )
+			
+			oth:Flashlight(false)
+			
 			
 			oth:PrintMessage( HUD_PRINTTALK, "You are now The Darkness." )
 			ply:PrintMessage( HUD_PRINTTALK, "You are now a Citizen." )
@@ -396,10 +379,17 @@ function ChatCommands( ply, text, public )
 			oth:Give( "gmod_camera" )
 			oth:Give( "weapon_physgun" )
 			end
+			ply:SetTeam( 2 )
+			oth:SetTeam( 1 )
 		else
+			if team.NumPlayers( 1 ) ~= 0 then
+			
+			else
+			ply:PrintMessage( HUD_PRINTTALK, "Use /swap." )
+			return
+			end
+			
 			local oth = team.GetPlayers(1)[1]
-			oth:SetTeam( 2 )
-			ply:SetTeam( 1 )
 			
 			oth:StripWeapons()
 			ply:StripWeapons()
@@ -416,7 +406,11 @@ function ChatCommands( ply, text, public )
 			ply:SetGravity( 0.25 )
 			oth:SetGravity( 1 )
 			
-			ply:Flashlight( false )
+			ModelSetting( ply )
+			ModelSetting( oth )
+			
+			ply:Flashlight(false)
+			
 			
 			ply:PrintMessage( HUD_PRINTTALK, "You are now The Darkness." )
 			oth:PrintMessage( HUD_PRINTTALK, "You are now a Citizen." )
@@ -431,6 +425,8 @@ function ChatCommands( ply, text, public )
 			oth:Give( "gmod_camera" )
 			oth:Give( "weapon_physgun" )
 			end
+			oth:SetTeam( 2 )
+			ply:SetTeam( 1 )
 		end
 		return false
 	end
@@ -445,7 +441,7 @@ function ChatCommands( ply, text, public )
 	end
 	
 	if (string.sub( text, 1, 9) == "/darkness") then
-		ply:PrintMessage( HUD_PRINTTALK, team.GetPlayers(1)[1]:Name().." is infected with the absence of light in his soul..." )
+		ply:PrintMessage( HUD_PRINTTALK, team.GetPlayers(1)[1]:Name().." is cursed with the absence of light in his soul..." )
 		return false
 	end
 	
@@ -457,6 +453,8 @@ function ChatCommands( ply, text, public )
 		ply:PrintMessage( HUD_PRINTTALK, "/darkness - Displays who the darkness is." )
 		ply:PrintMessage( HUD_PRINTTALK, "/drop - Drops currently held weapon." )
 		ply:PrintMessage( HUD_PRINTTALK, "/help - Shows this help text." )
+		ply:PrintMessage( HUD_PRINTTALK, "/me - Used when doing an action." )
+		ply:PrintMessage( HUD_PRINTTALK, "/ooc or // - Used when talking out of character." )
 		ply:PrintMessage( HUD_PRINTTALK, "/swap - Swaps team if you are Darkness or Citizen." )
 		if ply:IsAdmin() then
 			ply:PrintMessage( HUD_PRINTTALK, "/aswap - If there is already darkness, will swap anyway, forcing the darkness to change." )
